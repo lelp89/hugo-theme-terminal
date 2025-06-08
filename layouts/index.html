@@ -4,48 +4,46 @@ jQuery(document).ready(function($) {
     var animation = false;
 
     var commands = {
-        help: "Shows this message",
-        less: "Use less as output method",
-        whois: "Admin details",
-        social: "Social networks",
-        work: "Work experience",
-        education: "Education and more",
-        skills: "Tech skills",
-        {{ if .Site.Params.softskills }}
-            softskills: "Useful skills",
-        {{ end }}
-        languages: "Spoken languages",
-        {{ if .Site.Params.projects }}
-            projects: "Personal projects",
-        {{ end }}
         {{ if .Site.Params.certifications }}
-            certifications: "Certifications",
+            certifications: "Badges",
+            //certs: "Badges",
         {{ end }}
-        {{ if .Site.Params.startxLocation }}
-            startx: "Go to my blog :)",
-        {{ end }}
-        {{ if .Site.Params.linkedin }}
-            linkedin: "{{ .Site.Params.linkedin.description }}",
-        {{ end }}
+        education: "Education and more",
+        exit: "Exit the terminal",
         {{ if .Site.Params.github }}
             github: "{{ .Site.Params.github.description }}",
+        {{ end }}
+        help: "Shows this message",
+        {{ if .Site.Params.misc }}
+            {{ .Site.Params.misc.commandName | default "other" }}: "{{.Site.Params.misc.title }}",
         {{ end }}
         {{ if .Site.Params.instagram }}
             instagram: "{{ .Site.Params.instagram.description }}",
         {{ end }}
-        {{ if .Site.Params.misc }}
-            {{ .Site.Params.misc.commandName | default "other" }}: "{{.Site.Params.misc.title }}",
+        languages: "Spoken languages",
+        less: "Use less as output method",
+        {{ if .Site.Params.linkedin }}
+            linkedin: "{{ .Site.Params.linkedin.description }}",
+        {{ end }}
+        {{ if .Site.Params.projects }}
+            projects: "Personal projects",
+        {{ end }}
+        skills: "Tech skills",
+        social: "Social networks",
+        {{ if .Site.Params.softskills }}
+            softskills: "Useful skills",
         {{ end }}
         {{ if .Site.Params.Source }}
             source: "Details about the website",
         {{ end }}
+        {{ if .Site.Params.startxLocation }}
+            startx: "Go to my blog :)",
+        {{ end }}
         {{ if .Site.Params.version }}
             version: "Current version",
         {{ end }}
-        {{ if .Site.Params.exitLocation }}
-            exit: "exit the terminal",
-        {{ end }}
-        all: "Show all details",
+        whois: "Admin details",
+        work: "Work experience",
     };
 
     function progressBar(number) {
@@ -77,6 +75,7 @@ jQuery(document).ready(function($) {
                 ' <command> - execute the command\n' +
                 ' less <command> - use less to display the output\n\n' +
                 '\n[[b;white;]Available commands:]\n' +
+                '[[b;white;] all \t\t\tShow all details]\n' +
                commandsHelp();
 
     var whois = [
@@ -123,7 +122,7 @@ jQuery(document).ready(function($) {
                     socialText.push(`<a href="${sMap[key]}">${sMap[key]}</a>`);
                 } else {
                     // If hideName is false, show the name as the link text
-                    socialText.push(`[ <a href="${sMap[key]}">${key}</a> ]`);
+                    socialText.push(`[ <a href="${sMap[key]}" target="_blank" rel="noopener noreferrer">${key}</a> ]`);
                 };
             }
         }
@@ -422,15 +421,15 @@ jQuery(document).ready(function($) {
                 loading();
                 setTimeout(function(){window.location = "{{ .Site.Params.github.url }}"}, 2000);
                 break;
-            case 'instagram':
-                term.echo("loading Instragram account...");
-                loading();
-                setTimeout(function(){window.location = "{{ .Site.Params.instagram.url }}"}, 2000);
-                break;
             case 'linkedin':
                 term.echo("loading LinkedIn profile...");
                 loading();
                 setTimeout(function(){window.location = "{{ .Site.Params.linkedin.url }}"}, 2000);
+                break;
+            case 'instagram':
+                term.echo("loading Instragram account...");
+                loading();
+                setTimeout(function(){window.location = "{{ .Site.Params.instagram.url }}"}, 2000);
                 break;
             {{ end }}
             case ':(){:|:&};:':
