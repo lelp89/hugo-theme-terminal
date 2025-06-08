@@ -4,39 +4,46 @@ jQuery(document).ready(function($) {
     var animation = false;
 
     var commands = {
-        help: "Shows this message",
-        less: "Use less as output method",
-        whois: "Admin details",
-        social: "Social networks",
-        work: "Work experience",
+        {{ if .Site.Params.certifications }}
+            certifications: "Badges",
+            //certs: "Badges",
+        {{ end }}
         education: "Education and more",
-        skills: "Tech skills",
-        {{ if .Site.Params.softskills }}
-            softskills: "Useful skills",
+        exit: "Exit the terminal",
+        {{ if .Site.Params.github }}
+            github: "{{ .Site.Params.github.description }}",
+        {{ end }}
+        help: "Shows this message",
+        {{ if .Site.Params.misc }}
+            {{ .Site.Params.misc.commandName | default "other" }}: "{{.Site.Params.misc.title }}",
+        {{ end }}
+        {{ if .Site.Params.instagram }}
+            instagram: "{{ .Site.Params.instagram.description }}",
         {{ end }}
         languages: "Spoken languages",
+        less: "Use less as output method",
+        {{ if .Site.Params.linkedin }}
+            linkedin: "{{ .Site.Params.linkedin.description }}",
+        {{ end }}
         {{ if .Site.Params.projects }}
             projects: "Personal projects",
         {{ end }}
-        {{ if .Site.Params.certifications }}
-            certifications: "Certifications",
+        skills: "Tech skills",
+        social: "Social networks",
+        {{ if .Site.Params.softskills }}
+            softskills: "Useful skills",
+        {{ end }}
+        {{ if .Site.Params.Source }}
+            source: "Details about the website",
         {{ end }}
         {{ if .Site.Params.startxLocation }}
             startx: "Go to my blog :)",
         {{ end }}
-        {{ if .Site.Params.misc }}
-            {{ .Site.Params.misc.commandName | default "other" }}: "{{.Site.Params.misc.title }}",
-        {{ end }}
-        {{ if .Site.Params.Source }}
-            source: "shows details about template powering this website",
-        {{ end }}
         {{ if .Site.Params.version }}
             version: "Current version",
         {{ end }}
-        {{ if .Site.Params.exitLocation }}
-            exit: "exit the terminal",
-        {{ end }}
-        all: "Show all details",
+        whois: "Admin details",
+        work: "Work experience",
     };
 
     function progressBar(number) {
@@ -68,6 +75,7 @@ jQuery(document).ready(function($) {
                 ' <command> - execute the command\n' +
                 ' less <command> - use less to display the output\n\n' +
                 '\n[[b;white;]Available commands:]\n' +
+                '[[b;white;] all \t\t\tShow all details]\n' +
                commandsHelp();
 
     var whois = [
@@ -86,7 +94,7 @@ jQuery(document).ready(function($) {
         '[[b;grey;]Homepage:]\t\t{{ .homelink }}\n' +
         {{ end }}
         {{ if .description }}
-        '{{ .description }}' +
+        '\n{{ .description }}' +
         {{ end }}
         '\r',
     {{ end }}
@@ -97,7 +105,7 @@ jQuery(document).ready(function($) {
         let sMap = {
             {{ with .Site.Params.social.details }}
                 {{ range. }}
-                {{ .name }}: "{{ .url }}",
+                "{{ .name | safeJS }}": "{{ .url | safeJS }}",
                 {{ end }}
             {{ end }}
         };
@@ -105,19 +113,21 @@ jQuery(document).ready(function($) {
         {{ if .Site.Params.social.settings.hideName }}
         hideName = true
         {{ end }}
-        socialText = []
+
+        let socialText = [];
         for (let key in sMap) {
             if (sMap.hasOwnProperty(key)) {
                 if (hideName) {
-                    socialText.push(sMap[key]);
+                    // If hideName is true, show the URL as the link text
+                    socialText.push(`<a href="${sMap[key]}">${sMap[key]}</a>`);
                 } else {
-                    let longestKeyLength = Math.max(...Object.keys(sMap).map(key => key.length));
-                    socialText.push(`${padKey(key, longestKeyLength)}\t${sMap[key]}`)
+                    // If hideName is false, show the name as the link text
+                    socialText.push(`[ <a href="${sMap[key]}" target="_blank" rel="noopener noreferrer">${key}</a> ]`);
                 };
             }
         }
 
-        return socialText
+        return socialText;
     }
 
     var certifications = [
@@ -141,7 +151,7 @@ jQuery(document).ready(function($) {
 
     var work = [
     {{ with .Site.Params.work.details }}
-        '\n---\n' +
+        '---\n' +
         {{ range .}}
             '[[b;{{ .color | default "grey" }};]{{ .jobTitle }}]\n' +
             {{ if .company }}
@@ -239,22 +249,14 @@ jQuery(document).ready(function($) {
          {{ end }}
     ];
 
-    var source =  '        _______            \n' +
-                  '       |       |           \n' +
-                  '       |       |           \n' +
-                  '       |_______|_______    \n' +
-                  '               |       |   \n' +
-                  '               |       |   \n' +
-                  ' ______________|_______|   \n' +
-                  '|      |       |       |   \n' +
-                  '|      |       |       |   \n' +
-                  '|______|_______|_______|   \n' +
-                  '[[;red;]May the source be with you]\n' +
-                  '[[;grey;]https://github.com/coolapso/hugo-theme-terminalcv\n';
+    var source = [
+         {{ with .Site.Params.source }}
+        '[[b;{{ .contentColor }};]{{ .content }}]\n',
+         {{ end }}
+    ];
 
     var all = [
         whois,
-        social(),
         work,
         education,
         certifications,
@@ -264,9 +266,6 @@ jQuery(document).ready(function($) {
         projects,
         {{ if .Site.Params.misc }}
           misc,
-        {{ end }}
-        {{ if .Site.Params.source }}
-          source,
         {{ end }}
     ]
 
@@ -286,7 +285,18 @@ jQuery(document).ready(function($) {
                 }
             }
         }
-        //Function used by StartX to draw the progressBar
+
+        function echoLinks(array) {
+            if (array && array.length > 0) {
+                // Join the array items with two spaces in between
+                // and echo the resulting single string once as raw HTML.
+                term.echo('\r');
+                term.echo(array.join('  '), { raw: true });
+                term.echo('\r');
+            }
+        }
+
+        //Function used by StartX and social networks to draw the progressBar
         function progress(percent, width) {
             var size = Math.round(width*percent/100);
             var left = '', taken = '', i;
@@ -332,12 +342,11 @@ jQuery(document).ready(function($) {
                 useLess = true;
                 {{ end }}
                 echoArray(whois);
+                echoLinks(social());
                 break;
             case 'social':
-                {{ if .Site.Params.social.settings.useLess }}
-                useLess = true;
-                {{ end }}
-                echoArray(social());
+                //echoArray(social());
+                echoLinks(social());
                 break;
             case 'work':
                 {{ if .Site.Params.work.settings.useLess }}
@@ -396,21 +405,37 @@ jQuery(document).ready(function($) {
                 useLess = true;
                 {{ end }}
                 echoArray(all.flat(1));
+                echoLinks(social());
+                {{ if .Site.Params.source }}
+                  echoArray(source);
+                {{ end }}
                 break;
             {{ if .Site.Params.startxLocation }}
             case 'startx':
-                term.echo("loading ...");
+                term.echo("loading blog...");
                 loading();
                 setTimeout(function(){window.location = "{{ .Site.Params.startxLocation }}"}, 2000);
+                break;
+            case 'github':
+                term.echo("loading GitHub profile...");
+                loading();
+                setTimeout(function(){window.location = "{{ .Site.Params.github.url }}"}, 2000);
+                break;
+            case 'linkedin':
+                term.echo("loading LinkedIn profile...");
+                loading();
+                setTimeout(function(){window.location = "{{ .Site.Params.linkedin.url }}"}, 2000);
+                break;
+            case 'instagram':
+                term.echo("loading Instragram account...");
+                loading();
+                setTimeout(function(){window.location = "{{ .Site.Params.instagram.url }}"}, 2000);
                 break;
             {{ end }}
             case ':(){:|:&};:':
                 term.echo("nice try");
                 break;
             case 'source':
-                {{ if .Site.Params.misc.settings.useLess }}
-                useLess = true;
-                {{ end }}
                 term.echo(source);
                 break;
             case 'exit':
