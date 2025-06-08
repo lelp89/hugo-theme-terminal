@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
         '[[b;grey;]Homepage:]\t\t{{ .homelink }}\n' +
         {{ end }}
         {{ if .description }}
-        '{{ .description }}' +
+        '\n{{ .description }}' +
         {{ end }}
         '\r',
     {{ end }}
@@ -302,7 +302,9 @@ jQuery(document).ready(function($) {
             if (array && array.length > 0) {
                 // Join the array items with two spaces in between
                 // and echo the resulting single string once as raw HTML.
+                term.echo('\r');
                 term.echo(array.join('  '), { raw: true });
+                term.echo('\r');
             }
         }
 
