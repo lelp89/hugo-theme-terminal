@@ -3,6 +3,9 @@
 <html lang="{{ .Site.Language }}">
     <head>
         {{ partial "head.html" . }}
+        {{ if .Site.Params.analytics.code }}
+        {{ .Site.Params.analytics.code }}
+        {{ end }}
     </head>
         <body>
         {{ block "body" . }}
