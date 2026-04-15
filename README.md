@@ -106,6 +106,20 @@ All the content and configuration is done through the [config.yml](config.yml).
 
 you can just copy the existing example file and change it to your liking.
 
+### Custom CSS
+
+To change the default settings for the terminal interface, set the `customCSS` paramter in [config.yml](config.yml) and edit [/static/style.css](/static/style.css) to fit your style.
+
+You can change:
++ Background Color
++ Default Text Color
++ URL Color
++ Cursor Style
++ Cursor Color
++ Line Thickness
++ Terminal Glow
++ Fonts
+
 # Faviconss
 
 [RealFaviconGenerator](https://realfavicongenerator.net/) and put the generated files into the static your folder

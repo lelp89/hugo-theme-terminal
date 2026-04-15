@@ -37,6 +37,7 @@ params:
   # promptSimbolsColor: grey
   # startxLocation: https://example.com
   # useLess: true
+  #customCSS: true
   listLS: true
   #exitLocation: "about:blank"
   exitMessage: "[Session completed, the browserwindow can be safely closed]"
@@ -94,6 +95,9 @@ params:
     # settings:
     #   useLess: true
     details:
+      leftColor: "white"
+      rightColor: "white"
+      descriptionColor: "white"
       name: "John Doe"
       profession: "Unknown"
       location: "Somewhere"
@@ -103,9 +107,9 @@ params:
         Here you can write something catchy about yourself
 
   social:
-    # settings:
-    #   useLess: true
-    #   hideName: true
+    #settings:
+    #  useLess: true
+    #  hideName: true
     details:
       - name: "github"
         url: "https://github.com"
@@ -252,6 +256,7 @@ params:
     #   useLess: true
     details:
       - certName: Example Cert
+        #color: "blue"
         company: Example Certifying Company
         date: Date of Completion
         badge: https://www.link.to.badge
