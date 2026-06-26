@@ -9,7 +9,9 @@
 
 An easy to setup and (almost) fully hackable command line style CV theme with blogging capabilities
 
-Live example at: <https://coolapso.sh>
+Live example at: <https://hugoterminal.coolapso.sh> 
+want something more fancy? checkout my online version that uses a lot of the work from this theme: <https://cv.coolapso.sh>
+
 
 # Features
 
